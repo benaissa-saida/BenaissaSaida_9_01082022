@@ -37,6 +37,10 @@ label {
   color: #fff;
 }
 
+.error-msg{
+  color: rgb(255, 0, 0);
+}
+
 #btn-send-bill {
   width: 100px;
   background-color: #0E5AE5;

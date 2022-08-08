@@ -155,6 +155,8 @@ export default class {
     }
 
     bills.forEach(bill => {
+      /* Correction bug Dashboard*/
+
       // add event on click only if data-shownTicket is true
       //ajoute l'enement seulement s'il y a data-shownTickets à vrai
       //.data() permet d'attacher n'importe quelle data au dom sans que ce soit visible.

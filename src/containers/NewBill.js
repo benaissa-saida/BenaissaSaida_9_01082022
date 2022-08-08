@@ -17,6 +17,7 @@ export default class NewBill {
     this.billId = null;
     new Logout({ document, localStorage, onNavigate });
   }
+  
   handleChangeFile = (e) => {
     e.preventDefault();
     const file = this.document.querySelector(`input[data-testid="file"]`)
@@ -30,8 +31,7 @@ export default class NewBill {
       `span[data-testid='error-file-extension']`
     );
 
-    debugger
-
+    /* Correction bug des extensions */
     if (errorMessage) {
       errorMessage.remove();
     }
@@ -78,6 +78,7 @@ export default class NewBill {
 
     return this.validFile;
   };
+
   handleSubmit = (e) => {
     e.preventDefault();
     console.log(

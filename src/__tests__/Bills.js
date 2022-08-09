@@ -52,7 +52,7 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon.classList.contains("active-icon")).toBeTruthy();
     });
     test("Then bills should be ordered from earliest to latest", () => {
-      /* Coorection du tri de dates */
+      /* Correction du tri de dates */
       document.body.innerHTML = BillsUI({
         data: bills.sort((a, b) => new Date(b.date) - new Date(a.date)),
       });
@@ -70,7 +70,7 @@ describe("Given I am connected as an employee", () => {
   /* Création de test le modal lorsque l'oeil est appuyé */
   describe("When I am on Bills page and I click on the icon eye", () => {
     test("Then a modal should open", async () => {
-      //mock function modal
+      //mock function modal (crée une fausse fonction)
       $.fn.modal = jest.fn();
 
       //création d'un local storage factice avant de lui assigner le type d'utilisateur
@@ -154,7 +154,7 @@ describe("Given I am connected as an employee", () => {
         localStorage: window.localStorage,
       });
       document.body.innerHTML = BillsUI({
-        data: bills.sort((a, b) => new Date(b.date) - new Date(a.date)),
+        data: [],
       });
 
       //mock handleClickIconEye

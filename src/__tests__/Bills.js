@@ -88,7 +88,6 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = BillsUI({
         data: bills.sort((a, b) => new Date(b.date) - new Date(a.date)),
       });
-
       //initialiser la page employé
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
@@ -104,7 +103,6 @@ describe("Given I am connected as an employee", () => {
         store,
         localStorage: window.localStorage,
       });
-
       // Retrouve l'icon pour ouvrir le modale
       const iconEye = screen.getAllByTestId("icon-eye")[0];
 
@@ -177,7 +175,7 @@ describe("Given I am connected as an employee", () => {
 });
 
 //  test d'intégration GET
-describe("Given I am a user connected as Employee", () => {
+describe("Given I am connected as Employee", () => {
   describe("When I navigate to Bills page", () => {
     test("fetches bills from mock API GET", async () => {
       localStorage.setItem("user", JSON.stringify({ type: "Employee" }));

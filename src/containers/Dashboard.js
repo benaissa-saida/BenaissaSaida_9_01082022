@@ -95,6 +95,7 @@ export default class {
   };
 
   handleEditTicket(e, bill, bills) {
+    console.log(bill)
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
     if (this.counter % 2 === 0) {
@@ -155,15 +156,13 @@ export default class {
     }
 
     bills.forEach(bill => {
+      debugger
       /* Correction bug Dashboard*/
+      // Pour chaque ticket faire en sorte qu'il ne soit cliqué qu'une fois en fonction de son id
+      $(`#open-bill${bill.id}`).off('click').on('click', (e) => this.handleEditTicket(e, bill, bills))
 
-      // add event on click only if data-shownTicket is true
-      //ajoute l'enement seulement s'il y a data-shownTickets à vrai
-      //.data() permet d'attacher n'importe quelle data au dom sans que ce soit visible.
-      if(!$(`#open-bill${bill.id}`).data('shownTickets')){
-        $(`#open-bill${bill.id}`).data('shownTickets', true)
-        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-      }
+      //ancien bug pour soutenance
+      // $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
   }
 

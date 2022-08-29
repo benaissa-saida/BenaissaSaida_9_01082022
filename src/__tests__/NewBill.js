@@ -178,11 +178,11 @@ describe("Given I am connected as an employee", () => {
           localStorage: window.localStorage,
         });
 
-        // Define inputs values
+        // Definie les valeurs des inputs
         const inputData = {
           type: "Transports",
-          name: "Voyage Paris Nice",
-          amount: "174",
+          name: "Voyage Paris Monaco",
+          amount: "200",
           date: "2022-08-22",
           vat: 70,
           pct: 20,
@@ -191,7 +191,7 @@ describe("Given I am connected as an employee", () => {
           status: "pending",
         };
 
-        // Load the values in fields
+        // charge les valeurs dans les différents champs
         screen.getByTestId("expense-type").value = inputData.type;
         screen.getByTestId("expense-name").value = inputData.name;
         screen.getByTestId("amount").value = inputData.amount;
@@ -202,12 +202,17 @@ describe("Given I am connected as an employee", () => {
 
         const inputFile = screen.getByTestId("file");
 
+        //mock la fonction handleSubmit contenu dans newBill
         const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+
+        //retrouve le formulaire et met un evenement dessus
         const form = screen.getByTestId("form-new-bill");
         form.addEventListener("submit", handleSubmit);
 
+        //on attend l'envoie de l'image avec le userEvent
         await userEvent.upload(inputFile, inputData.file);
 
+        //avant de recréer le submit du fomulaire
         fireEvent.submit(form);
 
         expect(handleSubmit).toHaveBeenCalled();

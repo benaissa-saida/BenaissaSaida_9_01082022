@@ -15,22 +15,23 @@ export default class NewBill {
     this.fileUrl = null;
     this.fileName = null;
     this.billId = null;
-    this.validFile = false;
     new Logout({ document, localStorage, onNavigate });
   }
 
   handleChangeFile = (e) => {
     e.preventDefault();
-    const file = this.document.querySelector(`input[data-testid="file"]`)
-      .files[0];
+    const file = e.target.files[0];
     const formData = new FormData();
     /*Correction du code pour avoir seulement le filename*/
-    const fileName = file ? file.name : ''
+    const fileName = file.name
     const email = JSON.parse(localStorage.getItem("user")).email
     const fileExtension = fileName.split('.').pop();
     const errorMessage = this.document.querySelector(
       `span[data-testid='error-file-extension']`
     );
+
+    formData.append("file", file);
+    formData.append("email", email);
 
     /* Correction bug des extensions */
     if (errorMessage) {
@@ -39,7 +40,6 @@ export default class NewBill {
 
     if (!fileExtension.match("(jpe?g|png)")) {
       e.target.value = "";
-      this.validFile = false;
 
       const titleOfFile = this.document.querySelector(
         `input[data-testid="file"]`
@@ -50,11 +50,8 @@ export default class NewBill {
         "afterEnd",
         "<span class='error-file-extension error-msg' data-testid='error-file-extension'> Vous devez selectionner un fichier avec une extension <em>.jpg, .jpg </em> ou <em>.png </em></span>"
       );
-      return this.validFile
-    } 
-      formData.append("file", file);
-      formData.append("email", email);
 
+    } else {
       this.store
         .bills()
         .create({
@@ -64,19 +61,13 @@ export default class NewBill {
           },
         })
         .then(({ fileUrl, key }) => {
-          this.validFile = true;
           console.log(fileUrl);
           this.billId = key;
           this.fileUrl = fileUrl;
           this.fileName = fileName;
         })
-        .catch((error) => {
-          this.validFile = false;
-          console.error(error);
-          return this.validFile;
-        });
-
-    return this.validFile;
+        .catch((error) => console.error(error));
+    }
   };
 
   handleSubmit = (e) => {

@@ -61,7 +61,7 @@ describe("Given I am connected as an employee", () => {
       document.body.append(root);
       router();
     });
-
+    
     describe("When I choose a good extension (jpeg, jpg, png) file to upload", () => {
       test("Then the file will pass and the name will be found with good extension", async () => {
         const onNavigate = (pathname) => {
@@ -95,7 +95,6 @@ describe("Given I am connected as an employee", () => {
 
         expect(inputFile.files[0].name).toBe("image.jpg");
         expect(handleChangeFile).toBeCalled();
-        expect(newBill.validFile).toBeTruthy();
       });
     });
     describe("When I choose a wrong extension file to upload", () => {
@@ -132,10 +131,56 @@ describe("Given I am connected as an employee", () => {
 
         expect(inputFile.files[0].name).not.toBe("test.png");
         expect(handleChangeFile).toBeCalled();
-        expect(newBill.validFile).toBeFalsy();
         expect(
           screen.getByTestId("error-file-extension").classList
         ).toBeTruthy();
+      });
+
+      test("Then I can choose file but there are an error server 500", async () => {
+        jest.spyOn(mockStore, "bills");
+        //previent le console.error, 
+        jest.spyOn(console, "error").mockImplementation(() => {});
+
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+
+        //initie le store
+        const store = mockStore;
+
+        //Initie newBill
+        const newBill = new NewBill({
+          document,
+          onNavigate,
+          store,
+          localStorage: window.localStorage,
+        });
+
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            create: () => {
+              return Promise.reject(new Error("Erreur 500"));
+            },
+          };
+        });
+
+        const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+        const inputFile = screen.getByTestId("file");
+
+        const img = new File(["img"], "image.png", { type: "image/png" });
+
+        inputFile.addEventListener("change", handleChangeFile);
+        await waitFor(() => {
+          userEvent.upload(inputFile, img);
+        });
+
+        expect(handleChangeFile).toBeCalled();
+        expect(inputFile.files[0].name).toBe("image.png");
+        await new Promise(process.nextTick);
+        expect(console.error).toBeCalled();
       });
     });
   });
@@ -222,22 +267,44 @@ describe("Given I am connected as an employee", () => {
         expect(screen.getByTestId("btn-new-bill")).toBeTruthy();
         expect(screen.getByText("Mes notes de frais")).toBeTruthy();
       });
-      
+
       describe("When an error occurs on API", () => {
-        test("Then it should fetches messages from an API and fails with 500 message error", async () => {
+        test("Then it should fetches error from an API and fails with 500 error", async () => {
           jest.spyOn(mockStore, "bills");
+          jest.spyOn(console, "error").mockImplementation(() => {});
           mockStore.bills.mockImplementationOnce(() => {
             return {
-              list: () => {
+              update: () => {
                 return Promise.reject(new Error("Erreur 500"));
               },
             };
           });
 
-          window.onNavigate(ROUTES_PATH.Bills);
+          const onNavigate = (pathname) => {
+            document.body.innerHTML = ROUTES({ pathname });
+          };
+
+          const html = NewBillUI();
+          document.body.innerHTML = html;
+
+          //initie le store
+          const store = mockStore;
+
+          const newBill = new NewBill({
+            document,
+            onNavigate,
+            store,
+            localStorage: window.localStorage,
+          });
+
+          // Submit form
+          const form = screen.getByTestId("form-new-bill");
+          const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+          form.addEventListener("submit", handleSubmit);
+
+          fireEvent.submit(form);
           await new Promise(process.nextTick);
-          const message = await screen.getByText(/Erreur 500/);
-          expect(message).toBeTruthy();
+          expect(console.error).toBeCalled();
         });
       });
     });

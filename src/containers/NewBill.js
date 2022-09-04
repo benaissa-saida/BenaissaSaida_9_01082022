@@ -48,7 +48,7 @@ export default class NewBill {
 
       titleOfFile.insertAdjacentHTML(
         "afterEnd",
-        "<span class='error-file-extension error-msg' data-testid='error-file-extension'> Vous devez selectionner un fichier avec une extension <em>.jpg, .jpg </em> ou <em>.png </em></span>"
+        "<span class='error-file-extension error-msg' data-testid='error-file-extension'> Vous devez selectionner un fichier avec une extension <em>.jpg, .jpeg </em> ou <em>.png </em></span>"
       );
 
     } else {
